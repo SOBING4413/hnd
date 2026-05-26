@@ -46,6 +46,7 @@ TARGET_FPS          = 60
 GESTURE_COOLDOWN    = 2.5      # seconds before same gesture can re-trigger
 CHARGE_HOLD_MIN     = 0.5      # minimum hold time before charge accumulates
 MAX_DT              = 0.05     # clamp delta-time to avoid physics explosions
+COOLDOWN_EPS        = 1e-6     # float tolerance for cooldown completion
 
 
 # ─── Startup pickers ─────────────────────────────────────────────────────────
@@ -214,7 +215,7 @@ class App:
             # ── Gesture routing ───────────────────────────────────────────────
             self._gesture_cooldown = max(0.0, self._gesture_cooldown - dt)
             gesture_changed = gesture != self._prev_gesture
-            cooldown_clear  = self._gesture_cooldown == 0.0
+            cooldown_clear  = self._gesture_cooldown <= COOLDOWN_EPS
 
             if gesture_changed and (gesture == GESTURE_NONE or cooldown_clear):
                 self._on_gesture_change(gesture, hand_screen)
